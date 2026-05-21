@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Data Dashboard</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#121b2f;
+      --panel2:#0f172a;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --accent:#60a5fa;
+      --good:#34d399;
+      --warn:#fbbf24;
+      --bad:#f87171;
+      --border: rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(96,165,250,.25), transparent 60%),
+                  radial-gradient(1000px 500px at 90% 10%, rgba(52,211,153,.18), transparent 50%),
+                  var(--bg);
+      color:var(--text);
+    }
+    header{
+      padding:22px 18px;
+      border-bottom:1px solid var(--border);
+      background: linear-gradient(to bottom, rgba(255,255,255,.03), transparent);
+      position: sticky;
+      top:0;
+      z-index:10;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .wrap{max-width:1200px;margin:0 auto}
+    .topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    h1{font-size:20px;margin:0}
+    .subtitle{color:var(--muted);font-size:13px;margin-top:4px}
+
+    .filters{
+      display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;
+      padding:14px 0 0;
+    }
+    .field{display:flex;flex-direction:column;gap:6px;min-width:190px}
+    label{font-size:12px;color:var(--muted)}
+    input[type="date"], select{
+      width:100%;
+      background: rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      border-radius:10px;
+      color:var(--text);
+      padding:10px 12px;
+      outline:none;
+    }
+    input[type="date"]::-webkit-calendar-picker-indicator{filter: invert(1)}
+
+    .btn{
+      background: rgba(96,165,250,.18);
+      border: 1px solid rgba(96,165,250,.35);
+      color: var(--text);
+      border-radius:10px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:600;
+      transition: transform .05s ease, background .15s ease;
+      height:42px;
+      white-space:nowrap;
+    }
+    .btn:active{transform: scale(.99)}
+
+    main{padding:18px 18px 42px}
+
+    .cards{display:grid;grid-template-columns:repeat(4, minmax(170px, 1fr));gap:12px}
+    @media (max-width: 980px){.cards{grid-template-columns:repeat(2, minmax(170px, 1fr));}}
+    @media (max-width: 520px){.cards{grid-template-columns:1fr;}}
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px 14px 12px;
+      position:relative;
+      overflow:hidden;
+      min-height:92px;
+    }
+    .card:before{
+      content:"";
+      position:absolute;inset:-1px;
+      background: radial-gradient(400px 160px at 10% 0%, rgba(96,165,250,.25), transparent 60%);
+      opacity:.8;
+      pointer-events:none;
+    }
+    .card > *{position:relative}
+    .card .k{color:var(--muted);font-size:12px}
+    .card .v{font-size:22px;margin-top:8px;font-weight:800;letter-spacing:.2px}
+    .card .delta{margin-top:6px;color:var(--muted);font-size:12px}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 2fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}}
+
+    .panel{
+      background: rgba(255,255,255,.03);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .panel h2{margin:0 0 10px 0;font-size:14px;color:#dbeafe}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width: 980px){.row{grid-template-columns:1fr}}
+
+    .chartWrap{height:320px}
+    .chartSmall{height:260px}
+
+    .footerNote{color:var(--muted);font-size:12px;margin-top:14px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="topbar">
+        <div>
+          <h1>Data Dashboard</h1>
+          <div class="subtitle">Interactive charts powered by Chart.js (sample data + filters)</div>
+          <div class="footerNote" id="rangeLabel"></div>
+        </div>
+
+        <div class="filters" role="group" aria-label="Filters">
+          <div class="field">
+            <label for="startDate">Start date</label>
+            <input id="startDate" type="date" />
+          </div>
+          <div class="field">
+            <label for="endDate">End date</label>
+            <input id="endDate" type="date" />
+          </div>
+          <div class="field">
+            <label for="category">Category</label>
+            <select id="category">
+              <option value="all">All</option>
+            </select>
+          </div>
+          <button class="btn" id="applyBtn">Apply</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="cards" aria-label="Summary cards">
+        <div class="card">
+          <div class="k">Total Revenue</div>
+          <div class="v" id="kpiRevenue">—</div>
+          <div class="delta" id="kpiRevenueDelta">—</div>
+        </div>
+        <div class="card">
+          <div class="k">Total Orders</div>
+          <div class="v" id="kpiOrders">—</div>
+          <div class="delta" id="kpiOrdersDelta">—</div>
+        </div>
+        <div class="card">
+          <div class="k">Avg. Order Value</div>
+          <div class="v" id="kpiAov">—</div>
+          <div class="delta" id="kpiAovDelta">—</div>
+        </div>
+        <div class="card">
+          <div class="k">Conversion Rate</div>
+          <div class="v" id="kpiConv">—</div>
+          <div class="delta" id="kpiConvDelta">—</div>
+        </div>
+      </section>
+
+      <section class="grid" aria-label="Charts">
+        <div class="panel">
+          <h2>Revenue trend</h2>
+          <div class="chartWrap"><canvas id="lineChart"></canvas></div>
+        </div>
+
+        <div class="panel">
+          <h2>Share by category</h2>
+          <div class="chartSmall"><canvas id="pieChart"></canvas></div>
+        </div>
+
+        <div class="row" style="grid-column: 1 / -1">
+          <div class="panel">
+            <h2>Orders by category</h2>
+            <div class="chartSmall"><canvas id="barChart"></canvas></div>
+          </div>
+          <div class="panel">
+            <h2>Revenue by category (stacked-like)</h2>
+            <div class="chartSmall"><canvas id="hbarChart"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="footerNote">
+        Tip: Use the date range and category dropdown to update all charts.
+      </div>
+    </div>
+  </main>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
+
