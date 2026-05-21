@@ -2,13 +2,8 @@
 
 The Sample Data Dashboard is an interactive web-based analytics application developed using HTML, CSS, JavaScript, and Chart.js. The project is designed to visualize business-related data through dynamic charts, KPI cards, and filtering options. It generates deterministic sample data and provides real-time insights into revenue trends, customer orders, conversion rates, and category-wise business performance. The dashboard offers a clean and modern user interface with responsive design support for different screen sizes.
 
----
 
-## Live Demo
-
-The project is deployed and accessible using the link below:
-
-[View Live Demo](https://anushastefyj.github.io/SoftGrowTech-INTERACTIVE_DATA_DASHBOARD/)
+<img width="1888" height="916" alt="image" src="https://github.com/user-attachments/assets/8ab92268-256b-45a8-ac67-b12fdd493df1" />
 
 ---
 
@@ -26,6 +21,21 @@ The project is deployed and accessible using the link below:
 - The dashboard layout is fully responsive and works across desktop, tablet, and mobile devices.
 
 ---
+
+
+
+<img width="1820" height="562" alt="image" src="https://github.com/user-attachments/assets/fbf51aa8-46bd-49a0-aa74-4652c657db93" />
+
+
+## Live Demo
+
+The project is deployed and accessible using the link below:
+
+[View Live Demo](https://anushastefyj.github.io/SoftGrowTech-INTERACTIVE_DATA_DASHBOARD/)
+
+---
+
+
 
 ## Technologies Used
 
@@ -162,10 +172,6 @@ This project helped in understanding important frontend development and data vis
 ---
 
 ### output ###
-
-<img width="1888" height="916" alt="image" src="https://github.com/user-attachments/assets/8ab92268-256b-45a8-ac67-b12fdd493df1" />
-
-<img width="1820" height="562" alt="image" src="https://github.com/user-attachments/assets/fbf51aa8-46bd-49a0-aa74-4652c657db93" />
 
 
 
